@@ -8,19 +8,23 @@ const app = express();
 app.use(cors());
 const http = require("http").Server(app);
 
-const socket = require("socket.io")(http);
+const socket = require("socket.io")(http, {
+  cors: "http://localhost:3000/",
+});
 
 global.onlineUsers = new Map();
 
 socket.on("connection", (user) => {
   user.emit("changeOnline", onlineUsers.size);
   console.log("Connected");
-  user.broadcast.emit("changeOnline", onlineUsers.size + 1);
+  // user.broadcast.emit("changeOnline", onlineUsers.size);
   user.on("addUser", (data) => {
     onlineUsers.set(user.id, data.name);
     user.emit("changeOnline", onlineUsers.size);
+    user.broadcast.emit("changeOnline", onlineUsers.size);
   });
   user.on("newMessage", (message) => {
+    console.log(message);
     user.broadcast.emit("showMessage", message);
   });
   user.on("disconnect", () => {
