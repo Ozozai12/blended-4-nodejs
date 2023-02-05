@@ -9,7 +9,7 @@ app.use(cors());
 const http = require("http").Server(app);
 
 const socket = require("socket.io")(http, {
-  cors: "http://localhost:3000/",
+  cors: "https://gigachat-76i5.onrender.com",
 });
 
 global.onlineUsers = new Map();
